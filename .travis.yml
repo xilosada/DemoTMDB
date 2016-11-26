@@ -14,6 +14,7 @@ cache:
 android:
   components:
     - tools
+    - tools
     - build-tools-25.0.1
     - android-25
     - platform-tools
@@ -26,7 +27,7 @@ android:
     - sys-img-armeabi-v7a-android-24
 
 before_install:
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
@@ -38,5 +39,3 @@ script:
 
   # Disable for now, since Travis Android emulators are not reliable.
   #- ./gradlew connectedAndroidTestMockWebServerPiDebug --stacktrace
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help
