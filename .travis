@@ -1,0 +1,59 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+ @xilosada
+ Watch 35
+  Star 550
+ Fork 281 vincentbrison/vb-android-app-quality
+ Code  Issues 1  Pull requests 0  Projects 0  Wiki  Pulse  Graphs
+Branch: master Find file Copy pathvb-android-app-quality/.travis.yml
+8471f70  on Sep 29
+@friederbluemle friederbluemle Update Android build components
+2 contributors @vincentbrison @friederbluemle
+RawBlameHistory     
+41 lines (31 sloc)  918 Bytes
+language: android
+
+jdk:
+  - oraclejdk8
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+android:
+  components:
+    - tools
+    - build-tools-24.0.3
+    - android-24
+    - platform-tools
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - extra-android-support
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-24
+
+before_install:
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+
+before_script:
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
+script:
+  - ./gradlew check
+
+  # Disable for now, since Travis Android emulators are not reliable.
+  #- ./gradlew connectedAndroidTestMockWebServerPiDebug --stacktrace
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Status Help
