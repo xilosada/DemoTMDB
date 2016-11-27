@@ -1,0 +1,2 @@
+[![Build Status](https://travis-ci.org/xilosada/DemoTMDB.svg?branch=feature%2FTravisIntegration)](https://travis-ci.org/xilosada/DemoTMDB)
+[![codecov](https://codecov.io/gh/xilosada/DemoTMDB/branch/develop/graph/badge.svg)](https://codecov.io/gh/xilosada/DemoTMDB)
