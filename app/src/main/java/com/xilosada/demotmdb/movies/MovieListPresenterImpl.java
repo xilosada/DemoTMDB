@@ -22,6 +22,7 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
     public MovieListPresenterImpl(MoviesContract.MovieListView movieListView, MoviesProvider moviesProvider) {
         this.movieListView = movieListView;
         this.moviesProvider = moviesProvider;
+        requestPage(MoviesProvider.FIRST_PAGE);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
-        requestPage(1);
+        requestPage(MoviesProvider.FIRST_PAGE);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
     private ObservableTransformer<List<Movie>, List<Movie>> renderMovies() {
         return upstream -> upstream.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(movieListView::addMovies)
+                .doOnNext(movieListView::renderMovies)
                 .doOnError(throwable -> Log.d("error", throwable.getMessage()));
     }
 

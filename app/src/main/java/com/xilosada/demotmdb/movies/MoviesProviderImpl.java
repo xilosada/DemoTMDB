@@ -27,14 +27,6 @@ public class MoviesProviderImpl implements MoviesProvider {
         this.service = retrofit.create(TMDBService.class);
     }
 
-
-    @Override
-    public Observable<List<Movie>> getPopularMovies() {
-         return service.getPopularMovies("93aea0c77bc168d8bbce3918cefefa45", "en-US")
-                .map(moviePage -> moviePage.results)
-                .toObservable();
-    }
-
     @Override
     public Observable<List<Movie>> getPopularMovies(int page) {
         return service.getPopularMovies("93aea0c77bc168d8bbce3918cefefa45", "en-US", page)

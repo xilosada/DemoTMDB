@@ -10,7 +10,7 @@ import io.reactivex.Observable;
 
 public interface MoviesProvider {
 
-    Observable<List<Movie>> getPopularMovies();
+    int FIRST_PAGE = 1;
 
     Observable<List<Movie>> getPopularMovies(int page);
 
