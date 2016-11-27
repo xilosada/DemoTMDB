@@ -1,4 +1,4 @@
-package com.xilosada.demotmdb.movies;
+package views;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

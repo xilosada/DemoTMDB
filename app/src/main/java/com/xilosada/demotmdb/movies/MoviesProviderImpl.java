@@ -13,7 +13,7 @@ import tmdb.TMDBService;
  * Created by xilosada on 27/11/16.
  */
 
-public class MoviesProviderImpl implements MoviesProvider{
+public class MoviesProviderImpl implements MoviesProvider {
 
     private final TMDBService service;
 

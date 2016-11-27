@@ -1,4 +1,4 @@
-package com.xilosada.demotmdb.movies;
+package views;
 
 import android.widget.AbsListView;
 
