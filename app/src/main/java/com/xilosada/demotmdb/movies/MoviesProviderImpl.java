@@ -16,6 +16,7 @@ import tmdb.TMDBService;
 
 public class MoviesProviderImpl implements MoviesProvider {
 
+    public static final String API_KEY = "YOUR_TMDB_API_KEY";
     private final TMDBService service;
     private DeviceInfo deviceInfo;
 
@@ -32,14 +33,14 @@ public class MoviesProviderImpl implements MoviesProvider {
 
     @Override
     public Observable<List<Movie>> getPopularMovies(int page) {
-        return service.getPopularMovies("93aea0c77bc168d8bbce3918cefefa45", deviceInfo.getLocale(), page)
+        return service.getPopularMovies(API_KEY, deviceInfo.getLocale(), page)
                 .map(moviePage -> moviePage.results)
                 .toObservable();
     }
 
     @Override
     public Observable<List<Movie>> searchMovies(String query, int page) {
-        return service.searchMovies("93aea0c77bc168d8bbce3918cefefa45", deviceInfo.getLocale(), page, query)
+        return service.searchMovies(API_KEY, deviceInfo.getLocale(), page, query)
                 .map(moviePage -> moviePage.results)
                 .toObservable();
     }
