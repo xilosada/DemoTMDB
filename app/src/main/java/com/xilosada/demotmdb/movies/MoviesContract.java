@@ -6,16 +6,16 @@ import java.util.List;
  * Created by xilosada on 27/11/16.
  */
 
-public class MoviesContract {
+public interface MoviesContract {
 
-    public interface MovieListView {
+    interface MovieListView {
 
-        void addMovies(List<Movie> movies);
+        void renderMovies(List<Movie> movies);
 
         void reset();
     }
 
-    public interface MovieListPresenter {
+    interface MovieListPresenter {
 
         void requestPage(int page);
 

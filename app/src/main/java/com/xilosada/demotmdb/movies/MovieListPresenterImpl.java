@@ -22,6 +22,7 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
     public MovieListPresenterImpl(MoviesContract.MovieListView movieListView, MoviesProvider moviesProvider) {
         this.movieListView = movieListView;
         this.moviesProvider = moviesProvider;
+        requestPage(MoviesProvider.FIRST_PAGE);
     }
 
     @Override
@@ -31,25 +32,25 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
-        requestPage(1);
+        requestPage(MoviesProvider.FIRST_PAGE);
     }
 
     @Override
     public void requestPage(int page) {
         if (query.isEmpty()) {
-            disposable = loadFromPopular(page);
+            disposable = loadPopularMovies(page);
         } else {
-            disposable = loadFromSearch(query, page);
+            disposable = loadFromQuery(query, page);
         }
     }
 
-    private Disposable loadFromPopular(int page) {
+    private Disposable loadPopularMovies(int page) {
         return moviesProvider.getPopularMovies(page)
                 .compose(renderMovies())
                 .subscribe();
     }
 
-    private Disposable loadFromSearch(String query, int page) {
+    private Disposable loadFromQuery(String query, int page) {
         return moviesProvider.searchMovies(query, page)
                 .compose(renderMovies())
                 .subscribe();
@@ -58,7 +59,7 @@ public class MovieListPresenterImpl implements MoviesContract.MovieListPresenter
     private ObservableTransformer<List<Movie>, List<Movie>> renderMovies() {
         return upstream -> upstream.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(movieListView::addMovies)
+                .doOnNext(movieListView::renderMovies)
                 .doOnError(throwable -> Log.d("error", throwable.getMessage()));
     }
 
