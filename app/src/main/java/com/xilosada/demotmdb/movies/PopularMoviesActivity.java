@@ -1,24 +1,21 @@
 package com.xilosada.demotmdb.movies;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-
-import com.squareup.picasso.Picasso;
+import com.xilosada.demotmdb.DeviceInfo;
+import com.xilosada.demotmdb.ImageLoader;
 import com.xilosada.demotmdb.R;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import views.EndlessRecyclerViewScrollListener;
-import views.RxEditText;
 
 public class PopularMoviesActivity extends AppCompatActivity implements MoviesContract.MovieListView {
 
@@ -27,50 +24,58 @@ public class PopularMoviesActivity extends AppCompatActivity implements MoviesCo
     private MovieAdapter mAdapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private MoviesContract.MovieListPresenter presenter;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_movies);
+
+        //TODO DI Dagger
+        DeviceInfo deviceInfo = new DeviceInfo();
+        mAdapter = new MovieAdapter(this, new ImageLoader(this, deviceInfo));
+        presenter = new MovieListPresenterImpl(this, new MoviesProviderImpl(deviceInfo));
+
+        configViews();
+    }
+
+    private void configViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        RxEditText editText = (RxEditText) findViewById(R.id.myEditText);
         setSupportActionBar(toolbar);
 
+        searchView = (SearchView) findViewById(R.id.search);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            editText.setVisibility(View.VISIBLE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.setQuery(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                presenter.setQuery(query);
+                return true;
+            }
         });
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        Picasso picasso = Picasso.with(this);
-        // specify an adapter (see also next example)
-        mAdapter = new MovieAdapter(picasso);
         mRecyclerView.setAdapter(mAdapter);
-        presenter = new MovieListPresenterImpl(this, new MoviesProviderImpl());
 
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                Log.e("QUERY PAGE", "number "+ page);
-                Snackbar.make(view, "QUERY PAGE number "+ page, Snackbar.LENGTH_LONG).show();
+                Log.i("QUERY", "page number "+ page);
+                Snackbar.make(view, "Loading "+ page, Snackbar.LENGTH_LONG).show();
                 presenter.requestPage(page);
             }
         };
-
-        editText.getTextChanges()
-                .toObservable()
-                .throttleLast(200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(s -> presenter.setQuery(s))
-                .subscribe();
-
         mRecyclerView.addOnScrollListener(scrollListener);
     }
 

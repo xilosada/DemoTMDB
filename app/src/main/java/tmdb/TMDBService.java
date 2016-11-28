@@ -17,23 +17,22 @@ import retrofit2.http.Query;
 public interface TMDBService {
 
     String PRODUCTION_ENDPOINT = "https://api.themoviedb.org/3/";
+    String API_KEY = "api_key";
+    String LANGUAGE = "language";
+    String PAGE = "page";
+    String QUERY = "query";
 
     @GET("movie/popular")
     Flowable<Page<Movie>> getPopularMovies(
-            @Query("api_key") String apiKey,
-            @Query("language") String language);
-
-    @GET("movie/popular")
-    Flowable<Page<Movie>> getPopularMovies(
-            @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") int page);
+            @Query(API_KEY) String apiKey,
+            @Query(LANGUAGE) String language,
+            @Query(PAGE) int page);
 
     @GET("search/movie")
     Flowable<Page<Movie>> searchMovies(
-            @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") int page,
-            @Query("query") String query);
+            @Query(API_KEY) String apiKey,
+            @Query(LANGUAGE) String language,
+            @Query(PAGE) int page,
+            @Query(QUERY) String query);
 
 }

@@ -1,6 +1,7 @@
 package com.xilosada.demotmdb.movies;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import com.xilosada.demotmdb.DeviceInfo;
 
 import java.util.List;
 
@@ -16,8 +17,10 @@ import tmdb.TMDBService;
 public class MoviesProviderImpl implements MoviesProvider {
 
     private final TMDBService service;
+    private DeviceInfo deviceInfo;
 
-    public MoviesProviderImpl() {
+    public MoviesProviderImpl(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(TMDBService.PRODUCTION_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -29,14 +32,14 @@ public class MoviesProviderImpl implements MoviesProvider {
 
     @Override
     public Observable<List<Movie>> getPopularMovies(int page) {
-        return service.getPopularMovies("93aea0c77bc168d8bbce3918cefefa45", "en-US", page)
+        return service.getPopularMovies("93aea0c77bc168d8bbce3918cefefa45", deviceInfo.getLocale(), page)
                 .map(moviePage -> moviePage.results)
                 .toObservable();
     }
 
     @Override
     public Observable<List<Movie>> searchMovies(String query, int page) {
-        return service.searchMovies("93aea0c77bc168d8bbce3918cefefa45", "en-US", page, query)
+        return service.searchMovies("93aea0c77bc168d8bbce3918cefefa45", deviceInfo.getLocale(), page, query)
                 .map(moviePage -> moviePage.results)
                 .toObservable();
     }
